@@ -1,0 +1,12 @@
+[
+  {
+    "userId": "1",
+    "bookId": "1",
+    "endDate": "2024-07-28 3:00 PM GMT+1:00"
+  },
+  {
+    "userId": "2",
+    "bookId": "2",
+    "endDate": "2015-08-15 3:00 PM GMT+1:00"
+  }
+]
