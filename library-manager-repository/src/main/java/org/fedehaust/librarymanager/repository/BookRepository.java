@@ -10,7 +10,7 @@ public interface BookRepository {
 
     List<Book> getAllBooks();
 
-    static BookRepository openBookRepository(String databaseFile){
-        return new BookJdbcRepository(databaseFile);
+    static BookRepository openBookRepository(String databaseUrl){
+        return new BookJdbcRepository(databaseUrl);
     }
 }

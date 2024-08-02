@@ -10,7 +10,7 @@ public interface UserRepository {
 
     List<User> getAllUsers();
 
-    static UserJdbcRepository openUserRepository(String databaseFile){
-        return new UserJdbcRepository(databaseFile);
+    static UserJdbcRepository openUserRepository(String databaseUrl){
+        return new UserJdbcRepository(databaseUrl);
     }
 }

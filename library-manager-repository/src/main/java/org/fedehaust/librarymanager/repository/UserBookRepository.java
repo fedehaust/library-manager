@@ -10,7 +10,7 @@ public interface UserBookRepository {
 
     List<UserBook> getAllUserBooks();
 
-    static UserBookJdbcRepository openUserBookRepository(String databaseFile){
-        return new UserBookJdbcRepository(databaseFile);
+    static UserBookJdbcRepository openUserBookRepository(String databaseUrl){
+        return new UserBookJdbcRepository(databaseUrl);
     }
 }
