@@ -1,18 +1,20 @@
 package org.fedehaust.librarymanager.services.interfaces;
 
+import org.fedehaust.librarymanager.dtos.AuthorRequest;
+import org.fedehaust.librarymanager.dtos.AuthorResponse;
 import org.fedehaust.librarymanager.entities.Author;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface AuthorsService {
-    List<Author> findAllAuthors();
+    List<AuthorResponse> findAllAuthors();
 
-    Author findAuthorById(Long id);
+    AuthorResponse findAuthorById(Long id);
 
-    List<Author> findAllAuthorsbyIds(ArrayList<Long> authorIds);
+    List<AuthorResponse> findAllAuthorsbyIds(ArrayList<Long> authorIds);
 
-    Author createAuthor(Author author);
+    AuthorResponse createAuthor(AuthorRequest authorRequest);
 
     void updateAuthor(Author author);
 

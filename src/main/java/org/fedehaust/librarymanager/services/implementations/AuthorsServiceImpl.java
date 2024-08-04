@@ -3,8 +3,11 @@ package org.fedehaust.librarymanager.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fedehaust.librarymanager.dtos.AuthorRequest;
+import org.fedehaust.librarymanager.dtos.AuthorResponse;
 import org.fedehaust.librarymanager.entities.Author;
 import org.fedehaust.librarymanager.exceptions.AuthorNotFoundException;
+import org.fedehaust.librarymanager.mappers.AuthorsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,26 +26,27 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public List<Author> findAllAuthors() {
-        return authorsRepository.findAll();
+    public List<AuthorResponse> findAllAuthors() {
+        return AuthorsMapper.authorsToDtoList(authorsRepository.findAll());
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public List<Author> findAllAuthorsbyIds(ArrayList<Long> authorIds) {
-        return authorsRepository.findAllById(authorIds);
+    public List<AuthorResponse> findAllAuthorsbyIds(ArrayList<Long> authorIds) {
+        return AuthorsMapper.authorsToDtoList(authorsRepository.findAllById(authorIds));
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public Author findAuthorById(Long id) {
-        return authorsRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException(id));
+    public AuthorResponse findAuthorById(Long id) {
+        return AuthorsMapper.authorToDto(authorsRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException(id)));
     }
 
     @Override
-    public Author createAuthor(Author author) {
-        return authorsRepository.save(author);
+    public AuthorResponse createAuthor(AuthorRequest authorRequest) {
+        var author = AuthorsMapper.dtoToEntity(authorRequest);
+        return AuthorsMapper.authorToDto(authorsRepository.save(author));
     }
 
     @Override

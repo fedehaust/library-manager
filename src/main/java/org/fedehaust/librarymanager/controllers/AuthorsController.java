@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.fedehaust.librarymanager.dtos.AuthorRequest;
 import org.fedehaust.librarymanager.dtos.AuthorResponse;
 import org.fedehaust.librarymanager.exceptions.AuthorNotFoundException;
-import org.fedehaust.librarymanager.mappers.AuthorsMapper;
 import org.fedehaust.librarymanager.services.interfaces.AuthorsService;
 
 import org.springframework.http.HttpStatus;
@@ -30,8 +29,7 @@ public class AuthorsController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping
     public ResponseEntity<List<AuthorResponse>> getAllAuthors() {
-        var authors = authorsService.findAllAuthors();
-        return new ResponseEntity<>(AuthorsMapper.authorsToDtoList(authors), HttpStatus.OK);
+        return new ResponseEntity<>(authorsService.findAllAuthors(), HttpStatus.OK);
     }
 
     @ApiResponses(value = {
@@ -41,8 +39,7 @@ public class AuthorsController {
     @GetMapping("/{id}")
     public ResponseEntity<AuthorResponse> getAuthor(@PathVariable("id") Long id) {
         try {
-            var author = authorsService.findAuthorById(id);
-            return new ResponseEntity<>(AuthorsMapper.authorToDto(author), HttpStatus.OK);
+            return new ResponseEntity<>(authorsService.findAuthorById(id), HttpStatus.OK);
         } catch (AuthorNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author Not Found");
         }
@@ -55,8 +52,7 @@ public class AuthorsController {
     @PostMapping
     public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
         try {
-            var author = authorsService.createAuthor(AuthorsMapper.dtoToEntity(authorRequest));
-            return new ResponseEntity<>(AuthorsMapper.authorToDto(author), HttpStatus.CREATED);
+            return new ResponseEntity<>(authorsService.createAuthor(authorRequest), HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Author already exists");
         }
