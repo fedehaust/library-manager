@@ -8,7 +8,7 @@ import org.fedehaust.librarymanager.mappers.BookBorrowerMapper;
 import org.fedehaust.librarymanager.mappers.BorrowersMapper;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
 import org.fedehaust.librarymanager.repositories.BorrowersRepository;
-import org.fedehaust.librarymanager.services.interfaces.BookBorrowerServiceHelper;
+import org.fedehaust.librarymanager.services.interfaces.BookBorrowersServiceHelper;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,15 +22,15 @@ public class BorrowersServiceImpl implements BorrowersService {
 
     private final BorrowersRepository borrowersRepository;
     private final BookBorrowersRepository bookBorrowersRepository;
-    private final BookBorrowerServiceHelper bookBorrowerServiceHelper;
+    private final BookBorrowersServiceHelper bookBorrowersServiceHelper;
 
     public BorrowersServiceImpl(
             BorrowersRepository borrowersRepository,
             BookBorrowersRepository bookBorrowersRepository,
-            BookBorrowerServiceHelper bookBorrowerServiceHelper) {
+            BookBorrowersServiceHelper bookBorrowersServiceHelper) {
         this.borrowersRepository = borrowersRepository;
         this.bookBorrowersRepository = bookBorrowersRepository;
-        this.bookBorrowerServiceHelper = bookBorrowerServiceHelper;
+        this.bookBorrowersServiceHelper = bookBorrowersServiceHelper;
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -42,7 +42,7 @@ public class BorrowersServiceImpl implements BorrowersService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
     public BorrowerResponse findBorrowerById(Long id, boolean loadBooks) {
-        return BorrowersMapper.borrowerToDto(bookBorrowerServiceHelper.getBorrower(id), loadBooks);
+        return BorrowersMapper.borrowerToDto(bookBorrowersServiceHelper.getBorrower(id), loadBooks);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)

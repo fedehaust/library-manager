@@ -3,14 +3,14 @@ package org.fedehaust.librarymanager.services.implementations;
 import org.fedehaust.librarymanager.entities.Borrower;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.repositories.BorrowersRepository;
-import org.fedehaust.librarymanager.services.interfaces.BookBorrowerServiceHelper;
+import org.fedehaust.librarymanager.services.interfaces.BookBorrowersServiceHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BookBorrowerServiceHelperImpl implements BookBorrowerServiceHelper {
+public class BookBorrowersServiceHelperImpl implements BookBorrowersServiceHelper {
     private final BorrowersRepository borrowersRepository;
 
-    public BookBorrowerServiceHelperImpl(BorrowersRepository borrowersRepository) {
+    public BookBorrowersServiceHelperImpl(BorrowersRepository borrowersRepository) {
         this.borrowersRepository = borrowersRepository;
     }
 

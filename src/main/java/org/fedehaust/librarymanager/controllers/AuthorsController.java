@@ -1,5 +1,6 @@
 package org.fedehaust.librarymanager.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,12 +19,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("authors/")
+@RequestMapping("authors")
 public class AuthorsController {
 
     @Autowired
     private AuthorsService authorsService;
 
+    @Operation(summary = "Returns all the authors present in the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
@@ -32,11 +34,13 @@ public class AuthorsController {
         return new ResponseEntity<>(authorsService.findAllAuthors(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Returns the author with the specified Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
-    @GetMapping("/{id}")
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
+    @GetMapping("{id}")
     public ResponseEntity<AuthorResponse> getAuthor(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<>(authorsService.findAuthorById(id), HttpStatus.OK);
@@ -45,10 +49,12 @@ public class AuthorsController {
         }
     }
 
+    @Operation(summary = "Creates an author and retrieves the inserted object")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Conflict, Author already exists", content = @Content)})
+            @ApiResponse(responseCode = "409", description = "Conflict, Author already exists", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @PostMapping
     public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
         try {

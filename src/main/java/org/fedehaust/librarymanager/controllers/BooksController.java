@@ -1,5 +1,6 @@
 package org.fedehaust.librarymanager.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,12 +22,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("books/")
+@RequestMapping("books")
 public class BooksController {
 
     @Autowired
     private BooksService booksService;
 
+    @Operation(summary = "Returns all the books present in the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
@@ -35,11 +37,13 @@ public class BooksController {
         return new ResponseEntity<>(booksService.findAllBooks(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Returns the book with the specified Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
-    @GetMapping("/{id}")
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
+    @GetMapping("{id}")
     public ResponseEntity<BookResponse> getBook(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<>(booksService.findBookById(id), HttpStatus.OK);
@@ -48,10 +52,12 @@ public class BooksController {
         }
     }
 
+    @Operation(summary = "Creates a book and retrieves the inserted object")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "409", description = "Conflict, Book not created", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @PostMapping
     public ResponseEntity<BookResponse> borrowBook(@Valid @RequestBody BookRequest bookRequest) {
         try {
@@ -63,12 +69,16 @@ public class BooksController {
         }
     }
 
+    @Operation(summary = """
+            Borrows a book with the specified Id for the corresponding borrower \
+            if it is available and returns the corresponding Id created""")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "409", description = "Conflict, Book not created", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)})
-    @PutMapping("/{id}/borrow")
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
+    @PutMapping("{id}/borrow")
     public ResponseEntity<Long> borrowBook(
             @PathVariable("id") Long bookId,
             @Valid @RequestBody BookBorrowedRequest bookBorrowedRequest) {
