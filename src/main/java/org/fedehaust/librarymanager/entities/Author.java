@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "authors")
-public class Author extends EntityBase{
+public class Author extends EntityBase {
 
     @Column(length = 100, nullable = false, unique = true)
     private String name;
@@ -15,8 +15,10 @@ public class Author extends EntityBase{
     @Column(length = 1000, nullable = false)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.REMOVE }, mappedBy = "authors")
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            mappedBy = "authors")
     private Set<Book> books = new HashSet<Book>();
 
     public String getName() {

@@ -1,13 +1,11 @@
 package org.fedehaust.librarymanager.services.implementations;
 
+import org.fedehaust.librarymanager.entities.BookBorrower;
 import org.fedehaust.librarymanager.entities.Borrower;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
+import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
 import org.fedehaust.librarymanager.repositories.BorrowersRepository;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +17,13 @@ import java.util.List;
 public class BorrowersServiceImpl implements BorrowersService {
 
     private final BorrowersRepository borrowersRepository;
+    private final BookBorrowersRepository bookBorrowersRepository;
 
-    public BorrowersServiceImpl(BorrowersRepository borrowersRepository) {
+    public BorrowersServiceImpl(
+            BorrowersRepository borrowersRepository,
+            BookBorrowersRepository bookBorrowersRepository) {
         this.borrowersRepository = borrowersRepository;
+        this.bookBorrowersRepository=bookBorrowersRepository;
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -45,8 +47,8 @@ public class BorrowersServiceImpl implements BorrowersService {
     }
 
     @Override
-    public void createBorrower(Borrower borrower) {
-        borrowersRepository.save(borrower);
+    public Borrower createBorrower(Borrower borrower) {
+        return borrowersRepository.save(borrower);
     }
 
     @Override
@@ -63,20 +65,9 @@ public class BorrowersServiceImpl implements BorrowersService {
     }
 
     @Override
-    public Page<Borrower> findPaginated(Pageable pageable) {
-        List<Borrower> allBorrowers = findAllBorrowers();
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Borrower> list;
-
-        if (allBorrowers.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, allBorrowers.size());
-            list = allBorrowers.subList(startItem, toIndex);
-        }
-
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), allBorrowers.size());
+    public List<BookBorrower> findBorrowedBooksByBorrower(Long id) {
+        return bookBorrowersRepository
+                .getByBorrowerId(id)
+                .orElse(Collections.<BookBorrower>emptyList());
     }
 }

@@ -2,8 +2,7 @@ package org.fedehaust.librarymanager.services.interfaces;
 
 import org.fedehaust.librarymanager.entities.Book;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.fedehaust.librarymanager.entities.Borrower;
 
 import java.util.List;
 
@@ -13,12 +12,11 @@ public interface BooksService {
 
     public Book findBookById(Long id);
 
-    public void createBook(Book book);
+    public Book createBook(Book book);
 
     public void updateBook(Book book);
 
     public void deleteBook(Long id);
 
-    public Page<Book> findPaginated(Pageable pageable);
-
+    Long borrowBook(Book book, Borrower borrower);
 }

@@ -2,6 +2,10 @@ package org.fedehaust.librarymanager.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 @Entity
 @Table(name = "borrowers", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Borrower extends EntityBase {
@@ -17,6 +21,9 @@ public class Borrower extends EntityBase {
 
     @Column(length = 500)
     private String notes;
+
+    @OneToMany(mappedBy = "borrower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<BookBorrower> bookBorrowers = new HashSet<BookBorrower>();
 
     public String getFirst_name() {
         return first_name;
@@ -50,6 +57,14 @@ public class Borrower extends EntityBase {
         this.notes = notes;
     }
 
+    public Set<BookBorrower> getBookBorrowers() {
+        return bookBorrowers;
+    }
+
+    public void setBookBorrowers(Set<BookBorrower> bookBorrowers) {
+        this.bookBorrowers = bookBorrowers;
+    }
+
     public Borrower() {
     }
 
@@ -57,5 +72,12 @@ public class Borrower extends EntityBase {
         this.first_name = firstName;
         this.last_name = lastName;
         this.email = email;
+    }
+
+    public Borrower(String firstName, String lastName, String email, Optional<String> notes) {
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.email = email;
+        this.notes = notes.orElse(null);
     }
 }

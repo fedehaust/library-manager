@@ -2,15 +2,12 @@ package org.fedehaust.librarymanager.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.fedehaust.librarymanager.dtos.AuthorRequest;
 import org.fedehaust.librarymanager.dtos.AuthorResponse;
-import org.fedehaust.librarymanager.dtos.BookResponse;
 import org.fedehaust.librarymanager.exceptions.AuthorNotFoundException;
 import org.fedehaust.librarymanager.mappers.AuthorsMapper;
-import org.fedehaust.librarymanager.mappers.BooksMapper;
 import org.fedehaust.librarymanager.services.interfaces.AuthorsService;
 
 import org.springframework.http.HttpStatus;
@@ -38,7 +35,7 @@ public class AuthorsController {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid ID supplied",
+                    description = "Bad Request",
                     content = @Content),
             @ApiResponse(
                     responseCode = "404",
@@ -54,9 +51,23 @@ public class AuthorsController {
         }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request",
+                    content = @Content),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict, Author already exists",
+                    content = @Content)})
     @PostMapping
     public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest){
-        var author = authorsService.createAuthor(AuthorsMapper.dtoToEntity(authorRequest));
-        return new ResponseEntity<>(AuthorsMapper.authorToDto(author), HttpStatus.OK);
+        try {
+            var author = authorsService.createAuthor(AuthorsMapper.dtoToEntity(authorRequest));
+            return new ResponseEntity<>(AuthorsMapper.authorToDto(author), HttpStatus.CREATED);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Author already exists");
+        }
     }
 }
