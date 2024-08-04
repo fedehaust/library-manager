@@ -12,7 +12,7 @@ public interface AuthorsService {
 
     public Author findAuthorById(Long id);
 
-    public void createAuthor(Author author);
+    public Author createAuthor(Author author);
 
     public void updateAuthor(Author author);
 

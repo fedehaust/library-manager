@@ -1,5 +1,6 @@
 package org.fedehaust.librarymanager.mappers;
 
+import org.fedehaust.librarymanager.dtos.AuthorRequest;
 import org.fedehaust.librarymanager.dtos.AuthorResponse;
 import org.fedehaust.librarymanager.entities.Author;
 
@@ -19,5 +20,9 @@ public class AuthorsMapper {
                 .stream()
                 .map(AuthorsMapper::authorToDto)
                 .collect(Collectors.toList());
+    }
+
+    public static Author dtoToEntity(AuthorRequest authorRequest){
+        return new Author(authorRequest.name(),authorRequest.description());
     }
 }
