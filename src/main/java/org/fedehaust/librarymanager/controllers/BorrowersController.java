@@ -8,8 +8,6 @@ import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
 import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
-import org.fedehaust.librarymanager.mappers.BookBorrowerMapper;
-import org.fedehaust.librarymanager.mappers.BorrowersMapper;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("borrowers/")
@@ -31,19 +28,13 @@ public class BorrowersController {
     @GetMapping()
     public ResponseEntity<List<BorrowerResponse>> getAllBorrowers(
             @RequestParam(defaultValue = "false") Boolean loadBooks) {
-        var borrowers = borrowersService.findAllBorrowers();
-        return new ResponseEntity<>(
-                BorrowersMapper.borrowersToDtoList(borrowers, loadBooks),
-                HttpStatus.OK);
+        return new ResponseEntity<>(borrowersService.findAllBorrowers(loadBooks), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/books")
     public ResponseEntity<List<BookBorrowedResponse>> getAllBorrowedBooks(@PathVariable("id") Long id) {
         try {
-            var bookBorrowerList = borrowersService.findBorrowedBooksByBorrower(id);
-            return new ResponseEntity<>(
-                    BookBorrowerMapper.bookBorrowersToDtoList(bookBorrowerList),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(borrowersService.findBorrowedBooksByBorrower(id), HttpStatus.OK);
         } catch (BookNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
@@ -58,10 +49,7 @@ public class BorrowersController {
             @PathVariable("id") Long id,
             @RequestParam(defaultValue = "false") Boolean loadBooks) {
         try {
-            var borrower = borrowersService.findBorrowerById(id);
-            return new ResponseEntity<>(
-                    BorrowersMapper.borrowerToDto(borrower, loadBooks),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(borrowersService.findBorrowerById(id, loadBooks), HttpStatus.OK);
         } catch (BookNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
@@ -74,10 +62,9 @@ public class BorrowersController {
     @PostMapping
     public ResponseEntity<BorrowerResponse> createAuthor(@Valid @RequestBody BorrowerRequest borrowerRequest) {
         try {
-            var borrower = borrowersService.createBorrower(BorrowersMapper.dtoToEntity(borrowerRequest));
             return new ResponseEntity<>(
-                    BorrowersMapper.borrowerToDto(borrower, false),
-                    HttpStatus.CREATED);
+                    borrowersService.createBorrower(borrowerRequest,
+                            false), HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Borrower already exists");
         }

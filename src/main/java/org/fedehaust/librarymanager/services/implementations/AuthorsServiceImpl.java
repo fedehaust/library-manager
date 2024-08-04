@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.fedehaust.librarymanager.dtos.AuthorRequest;
 import org.fedehaust.librarymanager.dtos.AuthorResponse;
-import org.fedehaust.librarymanager.entities.Author;
 import org.fedehaust.librarymanager.exceptions.AuthorNotFoundException;
 import org.fedehaust.librarymanager.mappers.AuthorsMapper;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public List<AuthorResponse> findAllAuthorsbyIds(ArrayList<Long> authorIds) {
+    public List<AuthorResponse> findAllAuthorsByIds(ArrayList<Long> authorIds) {
         return AuthorsMapper.authorsToDtoList(authorsRepository.findAllById(authorIds));
     }
 
@@ -50,8 +49,8 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
-    public void updateAuthor(Author author) {
-        authorsRepository.save(author);
+    public void updateAuthor(AuthorRequest author) {
+        authorsRepository.save(AuthorsMapper.dtoToEntity(author));
     }
 
     @Override

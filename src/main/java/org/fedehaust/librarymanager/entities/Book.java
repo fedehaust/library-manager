@@ -3,7 +3,6 @@ package org.fedehaust.librarymanager.entities;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -26,10 +25,10 @@ public class Book extends EntityBase {
             name = "books_authors",
             joinColumns = {@JoinColumn(name = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
-    private Set<Author> authors = new HashSet<Author>();
+    private Set<Author> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<BookBorrower> bookBorrowers = new HashSet<BookBorrower>();
+    private Set<BookBorrower> bookBorrowers = new HashSet<>();
 
     public String getTitle() {
         return title;
@@ -76,9 +75,6 @@ public class Book extends EntityBase {
         this.bookBorrowers = bookBorrowers;
     }
 
-    public Book() {
-    }
-
     public Book(String isbn, String title, String description) {
         this.isbn = isbn;
         this.title = title;
@@ -90,5 +86,8 @@ public class Book extends EntityBase {
         this.title = title;
         this.description = description;
         this.authors = authors;
+    }
+
+    public Book() {
     }
 }

@@ -19,7 +19,7 @@ public class Author extends EntityBase {
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             mappedBy = "authors")
-    private Set<Book> books = new HashSet<Book>();
+    private final Set<Book> books = new HashSet<>();
 
     public String getName() {
         return name;
@@ -41,15 +41,11 @@ public class Author extends EntityBase {
         return books;
     }
 
-    public void setBooks(Set<Book> books) {
-        this.books = books;
-    }
-
-    public Author() {
-    }
-
     public Author(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public Author() {
     }
 }

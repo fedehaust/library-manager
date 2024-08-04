@@ -41,10 +41,6 @@ public class BookBorrower extends EntityBase {
         return borrowDate;
     }
 
-    public void setBorrowDate(Date borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
     public boolean isReturned() {
         return isReturned;
     }
@@ -53,12 +49,12 @@ public class BookBorrower extends EntityBase {
         isReturned = returned;
     }
 
-    public BookBorrower() {
-    }
-
     public BookBorrower(Book book, Borrower borrower) {
         this.book = book;
         this.borrower = borrower;
         this.borrowDate = new Date();
+    }
+
+    public BookBorrower() {
     }
 }

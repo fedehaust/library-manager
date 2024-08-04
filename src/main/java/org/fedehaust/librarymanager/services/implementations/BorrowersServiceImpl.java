@@ -1,8 +1,11 @@
 package org.fedehaust.librarymanager.services.implementations;
 
-import org.fedehaust.librarymanager.entities.BookBorrower;
-import org.fedehaust.librarymanager.entities.Borrower;
+import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
+import org.fedehaust.librarymanager.dtos.BorrowerRequest;
+import org.fedehaust.librarymanager.dtos.BorrowerResponse;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
+import org.fedehaust.librarymanager.mappers.BookBorrowerMapper;
+import org.fedehaust.librarymanager.mappers.BorrowersMapper;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
 import org.fedehaust.librarymanager.repositories.BorrowersRepository;
 import org.fedehaust.librarymanager.services.interfaces.BookBorrowerServiceHelper;
@@ -32,30 +35,34 @@ public class BorrowersServiceImpl implements BorrowersService {
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public List<Borrower> findAllBorrowers() {
-        return borrowersRepository.findAll();
+    public List<BorrowerResponse> findAllBorrowers(boolean loadBooks) {
+        return BorrowersMapper.borrowersToDtoList(borrowersRepository.findAll(), loadBooks);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public Borrower findBorrowerById(Long id) {
-        return bookBorrowerServiceHelper.getBorrower(id);
+    public BorrowerResponse findBorrowerById(Long id, boolean loadBooks) {
+        return BorrowersMapper.borrowerToDto(bookBorrowerServiceHelper.getBorrower(id), loadBooks);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public Borrower findBorrowerByEmail(String email) {
-        return borrowersRepository.findByEmail(email)
-                .orElseThrow(() -> new BorrowerNotFoundException(email));
+    public BorrowerResponse findBorrowerByEmail(String email, boolean loadBooks) {
+        return BorrowersMapper.borrowerToDto
+                (borrowersRepository.findByEmail(email)
+                                .orElseThrow(() -> new BorrowerNotFoundException(email)),
+                        loadBooks);
     }
 
     @Override
-    public Borrower createBorrower(Borrower borrower) {
-        return borrowersRepository.save(borrower);
+    public BorrowerResponse createBorrower(BorrowerRequest borrowerRequest, boolean loadBooks) {
+        var borrower = BorrowersMapper.dtoToEntity(borrowerRequest);
+        return BorrowersMapper.borrowerToDto(borrowersRepository.save(borrower), loadBooks);
     }
 
     @Override
-    public void updateBorrower(Borrower borrower) {
+    public void updateBorrower(BorrowerRequest borrowerRequest) {
+        var borrower = BorrowersMapper.dtoToEntity(borrowerRequest);
         borrowersRepository.save(borrower);
     }
 
@@ -68,9 +75,9 @@ public class BorrowersServiceImpl implements BorrowersService {
     }
 
     @Override
-    public List<BookBorrower> findBorrowedBooksByBorrower(Long id) {
-        return bookBorrowersRepository
+    public List<BookBorrowedResponse> findBorrowedBooksByBorrower(Long id) {
+        return BookBorrowerMapper.bookBorrowersToDtoList(bookBorrowersRepository
                 .getByBorrowerId(id)
-                .orElse(Collections.<BookBorrower>emptyList());
+                .orElse(Collections.emptyList()));
     }
 }

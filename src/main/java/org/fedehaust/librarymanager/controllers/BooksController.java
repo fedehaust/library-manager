@@ -12,7 +12,6 @@ import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.services.interfaces.BooksService;
 
-import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,6 @@ public class BooksController {
 
     @Autowired
     private BooksService booksService;
-
-    @Autowired
-    private BorrowersService borrowersService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),

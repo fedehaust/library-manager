@@ -13,6 +13,7 @@ import org.fedehaust.librarymanager.mappers.BooksMapper;
 import org.fedehaust.librarymanager.repositories.AuthorsRepository;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
 import org.fedehaust.librarymanager.repositories.BooksRepository;
+import org.fedehaust.librarymanager.services.interfaces.BookBorrowerServiceHelper;
 import org.fedehaust.librarymanager.services.interfaces.BooksService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -29,13 +30,13 @@ public class BooksServiceImpl implements BooksService {
     private final BooksRepository booksRepository;
     private final BookBorrowersRepository bookBorrowersRepository;
     private final AuthorsRepository authorsRepository;
-    private final BookBorrowerServiceHelperImpl bookBorrowerServiceHelperImpl;
+    private final BookBorrowerServiceHelper bookBorrowerServiceHelperImpl;
 
     public BooksServiceImpl(
             BooksRepository booksRepository,
             BookBorrowersRepository bookBorrowersRepository,
             AuthorsRepository authorsRepository,
-            BookBorrowerServiceHelperImpl bookBorrowerServiceHelperImpl) {
+            BookBorrowerServiceHelper bookBorrowerServiceHelperImpl) {
         this.booksRepository = booksRepository;
         this.bookBorrowersRepository = bookBorrowersRepository;
         this.authorsRepository = authorsRepository;
@@ -63,7 +64,8 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    public void updateBook(Book book) {
+    public void updateBook(BookRequest bookRequest) {
+        var book =BooksMapper.dtoToEntity(bookRequest, validateAndGetAuthors(bookRequest));
         booksRepository.save(book);
     }
 
@@ -96,7 +98,7 @@ public class BooksServiceImpl implements BooksService {
         var authorIdsSize = authorIds.size();
         var authors = authorsRepository.findAllById(authorIds);
 
-        if (authorIdsSize <= 0 || authors.size() != authorIdsSize)
+        if (authorIdsSize == 0 || authors.size() != authorIdsSize)
             throw new AuthorNotFoundException();
 
         return new HashSet<>(authors);

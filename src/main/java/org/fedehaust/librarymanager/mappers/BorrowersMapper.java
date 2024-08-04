@@ -3,7 +3,6 @@ package org.fedehaust.librarymanager.mappers;
 import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
-import org.fedehaust.librarymanager.entities.BookBorrower;
 import org.fedehaust.librarymanager.entities.Borrower;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class BorrowersMapper {
 
         return new BorrowerResponse(
                 borrower.getId(),
-                String.join(" ", borrower.getFirst_name(), borrower.getLast_name()),
+                String.join(" ", borrower.getFirstName(), borrower.getLastName()),
                 borrower.getEmail(),
                 booksBorrowed);
     }
@@ -37,6 +36,6 @@ public class BorrowersMapper {
                 borrowerRequest.firstName(),
                 borrowerRequest.lastName(),
                 borrowerRequest.email(),
-                borrowerRequest.notes());
+                borrowerRequest.notes().orElse(null));
     }
 }

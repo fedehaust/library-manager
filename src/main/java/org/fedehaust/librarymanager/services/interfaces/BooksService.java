@@ -3,9 +3,6 @@ package org.fedehaust.librarymanager.services.interfaces;
 import org.fedehaust.librarymanager.dtos.BookBorrowedRequest;
 import org.fedehaust.librarymanager.dtos.BookRequest;
 import org.fedehaust.librarymanager.dtos.BookResponse;
-import org.fedehaust.librarymanager.entities.Book;
-
-import org.fedehaust.librarymanager.entities.Borrower;
 
 import javax.management.InvalidAttributeValueException;
 import java.util.List;
@@ -16,9 +13,9 @@ public interface BooksService {
 
     BookResponse findBookById(Long id);
 
-    BookResponse createBook(BookRequest book);
+    BookResponse createBook(BookRequest bookRequest);
 
-    void updateBook(Book book);
+    void updateBook(BookRequest bookRequest);
 
     void deleteBook(Long id);
 

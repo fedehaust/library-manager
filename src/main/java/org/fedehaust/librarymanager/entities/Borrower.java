@@ -1,9 +1,9 @@
 package org.fedehaust.librarymanager.entities;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -23,21 +23,21 @@ public class Borrower extends EntityBase {
     private String notes;
 
     @OneToMany(mappedBy = "borrower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<BookBorrower> bookBorrowers = new HashSet<BookBorrower>();
+    private final Set<BookBorrower> bookBorrowers = new HashSet<>();
 
-    public String getFirst_name() {
+    public String getFirstName() {
         return first_name;
     }
 
-    public void setFirst_name(String first_name) {
+    public void setFirstName(String first_name) {
         this.first_name = first_name;
     }
 
-    public String getLast_name() {
+    public String getLastName() {
         return last_name;
     }
 
-    public void setLast_name(String last_name) {
+    public void setLastName(String last_name) {
         this.last_name = last_name;
     }
 
@@ -61,23 +61,19 @@ public class Borrower extends EntityBase {
         return bookBorrowers;
     }
 
-    public void setBookBorrowers(Set<BookBorrower> bookBorrowers) {
-        this.bookBorrowers = bookBorrowers;
-    }
-
-    public Borrower() {
-    }
-
     public Borrower(String firstName, String lastName, String email) {
         this.first_name = firstName;
         this.last_name = lastName;
         this.email = email;
     }
 
-    public Borrower(String firstName, String lastName, String email, Optional<String> notes) {
+    public Borrower(String firstName, String lastName, String email, @Nullable String notes) {
         this.first_name = firstName;
         this.last_name = lastName;
         this.email = email;
-        this.notes = notes.orElse(null);
+        this.notes = notes;
+    }
+
+    public Borrower() {
     }
 }

@@ -1,23 +1,24 @@
 package org.fedehaust.librarymanager.services.interfaces;
 
-import org.fedehaust.librarymanager.entities.BookBorrower;
-import org.fedehaust.librarymanager.entities.Borrower;
+import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
+import org.fedehaust.librarymanager.dtos.BorrowerRequest;
+import org.fedehaust.librarymanager.dtos.BorrowerResponse;
 
 import java.util.List;
 
 public interface BorrowersService {
 
-    List<Borrower> findAllBorrowers();
+    List<BorrowerResponse> findAllBorrowers(boolean loadBooks);
 
-    Borrower findBorrowerById(Long id);
+    BorrowerResponse findBorrowerById(Long id, boolean loadBooks);
 
-    Borrower findBorrowerByEmail(String email);
+    BorrowerResponse findBorrowerByEmail(String email, boolean loadBooks);
 
-    Borrower createBorrower(Borrower borrower);
+    BorrowerResponse createBorrower(BorrowerRequest borrowerRequest, boolean loadBooks);
 
-    void updateBorrower(Borrower borrower);
+    void updateBorrower(BorrowerRequest borrowerRequest);
 
     void deleteBorrower(Long id);
 
-    List<BookBorrower> findBorrowedBooksByBorrower(Long id);
+    List<BookBorrowedResponse> findBorrowedBooksByBorrower(Long id);
 }

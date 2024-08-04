@@ -31,10 +31,10 @@ public class DbInit {
                     "9780132350884",
                     "Clean Code",
                     """
-                            Even bad code can function. But if code isn\u2019t clean, \
+                            Even bad code can function. But if code isn’t clean, \
                             it can bring a development organization to its knees. \
                             Every year, countless hours and significant resources are \
-                            lost because of poorly written code. But it doesn\u2019t \
+                            lost because of poorly written code. But it does not \
                             have to be that way.""");
             book.addAuthor(author);
             booksRepository.save(book);
