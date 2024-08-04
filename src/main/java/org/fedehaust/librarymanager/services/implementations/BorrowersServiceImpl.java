@@ -5,6 +5,7 @@ import org.fedehaust.librarymanager.entities.Borrower;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
 import org.fedehaust.librarymanager.repositories.BorrowersRepository;
+import org.fedehaust.librarymanager.services.interfaces.BookBorrowerServiceHelper;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,12 +19,15 @@ public class BorrowersServiceImpl implements BorrowersService {
 
     private final BorrowersRepository borrowersRepository;
     private final BookBorrowersRepository bookBorrowersRepository;
+    private final BookBorrowerServiceHelper bookBorrowerServiceHelper;
 
     public BorrowersServiceImpl(
             BorrowersRepository borrowersRepository,
-            BookBorrowersRepository bookBorrowersRepository) {
+            BookBorrowersRepository bookBorrowersRepository,
+            BookBorrowerServiceHelper bookBorrowerServiceHelper) {
         this.borrowersRepository = borrowersRepository;
-        this.bookBorrowersRepository=bookBorrowersRepository;
+        this.bookBorrowersRepository = bookBorrowersRepository;
+        this.bookBorrowerServiceHelper = bookBorrowerServiceHelper;
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -35,8 +39,7 @@ public class BorrowersServiceImpl implements BorrowersService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
     public Borrower findBorrowerById(Long id) {
-        return borrowersRepository.findById(id)
-                .orElseThrow(() -> new BorrowerNotFoundException(id));
+        return bookBorrowerServiceHelper.getBorrower(id);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)

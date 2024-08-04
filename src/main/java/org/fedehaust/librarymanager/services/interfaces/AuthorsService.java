@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface AuthorsService {
-    public List<Author> findAllAuthors();
+    List<Author> findAllAuthors();
 
-    public Author findAuthorById(Long id);
+    Author findAuthorById(Long id);
 
-    public List<Author> findAllAuthorsbyIds(ArrayList<Long> authorIds);
+    List<Author> findAllAuthorsbyIds(ArrayList<Long> authorIds);
 
-    public Author createAuthor(Author author);
+    Author createAuthor(Author author);
 
-    public void updateAuthor(Author author);
+    void updateAuthor(Author author);
 
-    public void deleteAuthor(Long id);
+    void deleteAuthor(Long id);
 }

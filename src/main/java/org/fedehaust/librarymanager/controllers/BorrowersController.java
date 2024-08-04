@@ -29,16 +29,21 @@ public class BorrowersController {
     private BorrowersService borrowersService;
 
     @GetMapping()
-    public ResponseEntity<List<BorrowerResponse>> getAllBorrowers(@RequestParam Optional<Boolean> loadBooks) {
+    public ResponseEntity<List<BorrowerResponse>> getAllBorrowers(
+            @RequestParam(defaultValue = "false") Boolean loadBooks) {
         var borrowers = borrowersService.findAllBorrowers();
-        return new ResponseEntity<>(BorrowersMapper.borrowersToDtoList(borrowers, loadBooks.orElse(false)), HttpStatus.OK);
+        return new ResponseEntity<>(
+                BorrowersMapper.borrowersToDtoList(borrowers, loadBooks),
+                HttpStatus.OK);
     }
 
     @GetMapping("/{id}/books")
     public ResponseEntity<List<BookBorrowedResponse>> getAllBorrowedBooks(@PathVariable("id") Long id) {
         try {
             var bookBorrowerList = borrowersService.findBorrowedBooksByBorrower(id);
-            return new ResponseEntity<>(BookBorrowerMapper.bookBorrowersToDtoList(bookBorrowerList), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    BookBorrowerMapper.bookBorrowersToDtoList(bookBorrowerList),
+                    HttpStatus.OK);
         } catch (BookNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
@@ -46,19 +51,17 @@ public class BorrowersController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Borrower not found",
-                    content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Borrower not found", content = @Content)})
     @GetMapping("/{id}")
-    public ResponseEntity<BorrowerResponse> getBorrower(@PathVariable("id") Long id, @RequestParam Optional<Boolean> loadBooks) {
+    public ResponseEntity<BorrowerResponse> getBorrower(
+            @PathVariable("id") Long id,
+            @RequestParam(defaultValue = "false") Boolean loadBooks) {
         try {
             var borrower = borrowersService.findBorrowerById(id);
-            return new ResponseEntity<>(BorrowersMapper.borrowerToDto(borrower, loadBooks.orElse(false)), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    BorrowersMapper.borrowerToDto(borrower, loadBooks),
+                    HttpStatus.OK);
         } catch (BookNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
@@ -66,19 +69,15 @@ public class BorrowersController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created"),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict, Borrower already exists",
-                    content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict, Borrower already exists", content = @Content)})
     @PostMapping
     public ResponseEntity<BorrowerResponse> createAuthor(@Valid @RequestBody BorrowerRequest borrowerRequest) {
         try {
             var borrower = borrowersService.createBorrower(BorrowersMapper.dtoToEntity(borrowerRequest));
-            return new ResponseEntity<>(BorrowersMapper.borrowerToDto(borrower,false), HttpStatus.CREATED);
+            return new ResponseEntity<>(
+                    BorrowersMapper.borrowerToDto(borrower, false),
+                    HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Borrower already exists");
         }

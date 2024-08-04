@@ -3,8 +3,8 @@ package org.fedehaust.librarymanager.config;
 import org.fedehaust.librarymanager.entities.Author;
 import org.fedehaust.librarymanager.entities.Book;
 import org.fedehaust.librarymanager.entities.Borrower;
-import org.fedehaust.librarymanager.services.interfaces.BooksService;
-import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
+import org.fedehaust.librarymanager.repositories.BooksRepository;
+import org.fedehaust.librarymanager.repositories.BorrowersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DbInit {
     @Autowired
-    private BooksService booksService;
+    private BooksRepository booksRepository;
 
     @Autowired
-    private BorrowersService borrowersService;
+    private BorrowersRepository borrowersRepository;
 
     @Bean
     public CommandLineRunner initialCreate() {
@@ -37,7 +37,7 @@ public class DbInit {
                             lost because of poorly written code. But it doesn\u2019t \
                             have to be that way.""");
             book.addAuthor(author);
-            booksService.createBook(book);
+            booksRepository.save(book);
 
             var book1 = new Book(
                     "9780134494166",
@@ -52,7 +52,7 @@ public class DbInit {
                             professionalism and discipline to application architecture \
                             and design.""");
             book.addAuthor(author);
-            booksService.createBook(book1);
+            booksRepository.save(book1);
 
             var book2 = new Book(
                     "9780321125217",
@@ -81,12 +81,12 @@ public class DbInit {
                             incorporates numerous examples based on actual projects \
                             to illustrate the application of domain-driven design to \
                              real-world software modeling and development."""));
-            booksService.createBook(book2);
+            booksRepository.save(book2);
 
             var borrower1 = new Borrower("Federico", "Haustein", "admin@admin.in");
-            borrowersService.createBorrower(borrower1);
+            borrowersRepository.save(borrower1);
             var borrower2 = new Borrower("Lionel Andrés", "Messi Cuccittini", "messi@goat.com");
-            borrowersService.createBorrower(borrower2);
+            borrowersRepository.save(borrower2);
         };
     }
 }

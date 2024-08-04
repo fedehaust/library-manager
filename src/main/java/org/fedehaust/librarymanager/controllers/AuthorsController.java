@@ -25,6 +25,9 @@ public class AuthorsController {
     @Autowired
     private AuthorsService authorsService;
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping
     public ResponseEntity<List<AuthorResponse>> getAllAuthors() {
         var authors = authorsService.findAllAuthors();
@@ -33,14 +36,8 @@ public class AuthorsController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Author not found",
-                    content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content)})
     @GetMapping("/{id}")
     public ResponseEntity<AuthorResponse> getAuthor(@PathVariable("id") Long id) {
         try {
@@ -53,20 +50,14 @@ public class AuthorsController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created"),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict, Author already exists",
-                    content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict, Author already exists", content = @Content)})
     @PostMapping
-    public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest){
+    public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
         try {
             var author = authorsService.createAuthor(AuthorsMapper.dtoToEntity(authorRequest));
             return new ResponseEntity<>(AuthorsMapper.authorToDto(author), HttpStatus.CREATED);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Author already exists");
         }
     }
