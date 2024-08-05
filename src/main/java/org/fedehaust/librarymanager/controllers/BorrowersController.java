@@ -9,6 +9,7 @@ import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
 import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
+import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,7 +35,7 @@ public class BorrowersController {
     @GetMapping()
     public ResponseEntity<List<BorrowerResponse>> getAllBorrowers(
             @RequestParam(defaultValue = "false") Boolean loadBooks) {
-        return new ResponseEntity<>(borrowersService.findAllBorrowers(loadBooks), HttpStatus.OK);
+        return ResponseEntity.ok().body(borrowersService.findAllBorrowers(loadBooks));
     }
 
     @Operation(summary = "Returns all the borrowed books by the specified borrower Id")
@@ -45,8 +47,8 @@ public class BorrowersController {
     @GetMapping("{id}/books")
     public ResponseEntity<List<BookBorrowedResponse>> getAllBorrowedBooks(@PathVariable("id") Long id) {
         try {
-            return new ResponseEntity<>(borrowersService.findBorrowedBooksByBorrower(id), HttpStatus.OK);
-        } catch (BookNotFoundException e) {
+            return ResponseEntity.ok().body(borrowersService.findBorrowedBooksByBorrower(id));
+        } catch (BorrowerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
     }
@@ -62,8 +64,8 @@ public class BorrowersController {
             @PathVariable("id") Long id,
             @RequestParam(defaultValue = "false") Boolean loadBooks) {
         try {
-            return new ResponseEntity<>(borrowersService.findBorrowerById(id, loadBooks), HttpStatus.OK);
-        } catch (BookNotFoundException e) {
+            return ResponseEntity.ok().body(borrowersService.findBorrowerById(id, loadBooks));
+        } catch (BorrowerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
         }
     }
@@ -77,9 +79,10 @@ public class BorrowersController {
     @PostMapping
     public ResponseEntity<BorrowerResponse> createBorrower(@Valid @RequestBody BorrowerRequest borrowerRequest) {
         try {
-            return new ResponseEntity<>(
-                    borrowersService.createBorrower(borrowerRequest,
-                            false), HttpStatus.CREATED);
+            var borrower = borrowersService.createBorrower(borrowerRequest, false);
+            return ResponseEntity
+                    .created(new URI("/borrowers/%d".formatted(borrower.id())))
+                    .body(borrower);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Borrower already exists");
         }

@@ -10,6 +10,7 @@ public class BookBorrowerMapper {
 
     public static BookBorrowedResponse bookBorrowerToDto(BookBorrower bookBorrower) {
         return new BookBorrowedResponse(
+                bookBorrower.getId(),
                 bookBorrower.getBook().getTitle(),
                 bookBorrower.getBorrowDate(),
                 bookBorrower.isReturned());

@@ -4,18 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.exceptions.BookBorrowerNotFoundException;
-import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
-import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.services.interfaces.BookBorrowersService;
-import org.fedehaust.librarymanager.services.interfaces.BooksService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -25,6 +22,21 @@ public class BookBorrowsController {
     @Autowired
     private BookBorrowersService bookBorrowersService;
 
+    @Operation(summary = "Returns the BookBorrower with the specified Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
+    @GetMapping("{id}")
+    public ResponseEntity<BookBorrowedResponse> getBookBorrower(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok().body(bookBorrowersService.findBookBorrowerById(id));
+        } catch (BookBorrowerNotFoundException exception) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "BookBorrower Not Found");
+        }
+    }
+
     @Operation(summary = "Returns a book")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "No Content"),
@@ -32,7 +44,7 @@ public class BookBorrowsController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @PatchMapping("{id}/return")
-    public ResponseEntity<Void> borrowBook(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> returnBook(@PathVariable("id") Long id) {
         try {
             bookBorrowersService.returnBook(id);
             return ResponseEntity.noContent().build();

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class AuthorsController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping
     public ResponseEntity<List<AuthorResponse>> getAllAuthors() {
-        return new ResponseEntity<>(authorsService.findAllAuthors(), HttpStatus.OK);
+        return ResponseEntity.ok().body(authorsService.findAllAuthors());
     }
 
     @Operation(summary = "Returns the author with the specified Id")
@@ -43,7 +44,7 @@ public class AuthorsController {
     @GetMapping("{id}")
     public ResponseEntity<AuthorResponse> getAuthor(@PathVariable("id") Long id) {
         try {
-            return new ResponseEntity<>(authorsService.findAuthorById(id), HttpStatus.OK);
+            return ResponseEntity.ok().body(authorsService.findAuthorById(id));
         } catch (AuthorNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author Not Found");
         }
@@ -58,7 +59,10 @@ public class AuthorsController {
     @PostMapping
     public ResponseEntity<AuthorResponse> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
         try {
-            return new ResponseEntity<>(authorsService.createAuthor(authorRequest), HttpStatus.CREATED);
+            var author =authorsService.createAuthor(authorRequest);
+            return ResponseEntity
+                    .created(new URI("/authors/%d".formatted(author.id())))
+                    .body(author);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Author already exists");
         }

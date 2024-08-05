@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class BooksController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping()
     public ResponseEntity<List<BookResponse>> getAllBooks() {
-        return new ResponseEntity<>(booksService.findAllBooks(), HttpStatus.OK);
+        return ResponseEntity.ok().body(booksService.findAllBooks());
     }
 
     @Operation(summary = "Returns the book with the specified Id")
@@ -46,7 +47,7 @@ public class BooksController {
     @GetMapping("{id}")
     public ResponseEntity<BookResponse> getBook(@PathVariable("id") Long id) {
         try {
-            return new ResponseEntity<>(booksService.findBookById(id), HttpStatus.OK);
+            return ResponseEntity.ok().body(booksService.findBookById(id));
         } catch (BookNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book Not Found");
         }
@@ -59,9 +60,12 @@ public class BooksController {
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @PostMapping
-    public ResponseEntity<BookResponse> borrowBook(@Valid @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequest bookRequest) {
         try {
-            return new ResponseEntity<>(booksService.createBook(bookRequest), HttpStatus.CREATED);
+            var book = booksService.createBook(bookRequest);
+            return ResponseEntity
+                    .created(new URI("/books/%d".formatted(book.id())))
+                    .body(book);
         } catch (AuthorNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Author/s do not exist");
         } catch (Exception e) {
@@ -83,7 +87,10 @@ public class BooksController {
             @PathVariable("id") Long bookId,
             @Valid @RequestBody BookBorrowedRequest bookBorrowedRequest) {
         try {
-            return new ResponseEntity<>(booksService.borrowBook(bookId, bookBorrowedRequest), HttpStatus.CREATED);
+            var borrowBookId = booksService.borrowBook(bookId, bookBorrowedRequest);
+            return ResponseEntity
+                    .created(new URI("/bookBorrows/%d".formatted(borrowBookId)))
+                    .body(borrowBookId);
         } catch (BorrowerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower does not exist");
         } catch (BookNotFoundException e) {
