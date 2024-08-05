@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("books")
@@ -34,8 +33,8 @@ public class BooksController {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping()
-    public ResponseEntity<List<BookResponse>> getAllBooks() {
-        return ResponseEntity.ok().body(booksService.findAllBooks());
+    public Iterable<BookResponse> getAllBooks() {
+        return booksService.findAllBooks();
     }
 
     @Operation(summary = "Returns the book with the specified Id")
@@ -89,7 +88,7 @@ public class BooksController {
         try {
             var borrowBookId = booksService.borrowBook(bookId, bookBorrowedRequest);
             return ResponseEntity
-                    .created(new URI("/bookBorrows/%d".formatted(borrowBookId)))
+                    .created(new URI("/bookBorrowers/%d".formatted(borrowBookId)))
                     .body(borrowBookId);
         } catch (BorrowerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower does not exist");

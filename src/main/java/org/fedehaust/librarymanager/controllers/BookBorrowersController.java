@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("bookBorrows")
-public class BookBorrowsController {
+@RequestMapping("bookBorrowers")
+public class BookBorrowersController {
 
     @Autowired
     private BookBorrowersService bookBorrowersService;

@@ -3,7 +3,6 @@ package org.fedehaust.librarymanager.services.implementations;
 import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
-import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.mappers.BookBorrowerMapper;
 import org.fedehaust.librarymanager.mappers.BorrowersMapper;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
@@ -45,33 +44,10 @@ public class BorrowersServiceImpl implements BorrowersService {
         return BorrowersMapper.borrowerToDto(bookBorrowersServiceHelper.getBorrower(id), loadBooks);
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    @Override
-    public BorrowerResponse findBorrowerByEmail(String email, boolean loadBooks) {
-        return BorrowersMapper.borrowerToDto
-                (borrowersRepository.findByEmail(email)
-                                .orElseThrow(() -> new BorrowerNotFoundException(email)),
-                        loadBooks);
-    }
-
     @Override
     public BorrowerResponse createBorrower(BorrowerRequest borrowerRequest, boolean loadBooks) {
         var borrower = BorrowersMapper.dtoToEntity(borrowerRequest);
         return BorrowersMapper.borrowerToDto(borrowersRepository.save(borrower), loadBooks);
-    }
-
-    @Override
-    public void updateBorrower(BorrowerRequest borrowerRequest) {
-        var borrower = BorrowersMapper.dtoToEntity(borrowerRequest);
-        borrowersRepository.save(borrower);
-    }
-
-    @Override
-    public void deleteBorrower(Long id) {
-        var user = borrowersRepository.findById(id)
-                .orElseThrow(() -> new BorrowerNotFoundException(id));
-
-        borrowersRepository.deleteById(user.getId());
     }
 
     @Override

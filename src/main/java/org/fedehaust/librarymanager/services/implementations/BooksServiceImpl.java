@@ -8,7 +8,6 @@ import org.fedehaust.librarymanager.entities.Book;
 import org.fedehaust.librarymanager.entities.BookBorrower;
 import org.fedehaust.librarymanager.exceptions.AuthorNotFoundException;
 import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
-import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.mappers.BooksMapper;
 import org.fedehaust.librarymanager.repositories.AuthorsRepository;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
@@ -64,20 +63,6 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    public void updateBook(BookRequest bookRequest) {
-        var book =BooksMapper.dtoToEntity(bookRequest, validateAndGetAuthors(bookRequest));
-        booksRepository.save(book);
-    }
-
-    @Override
-    public void deleteBook(Long id) {
-        var book = booksRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
-
-        booksRepository.deleteById(book.getId());
-    }
-
-    @Override
     public Long borrowBook(Long bookId, BookBorrowedRequest bookBorrowedRequest) throws InvalidAttributeValueException {
         if (bookId != bookBorrowedRequest.bookId())
             throw new InvalidAttributeValueException();
@@ -106,6 +91,6 @@ public class BooksServiceImpl implements BooksService {
 
     private Book getBook(Long bookId) {
         return booksRepository.findById(bookId)
-                .orElseThrow(() -> new BorrowerNotFoundException(bookId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
     }
 }

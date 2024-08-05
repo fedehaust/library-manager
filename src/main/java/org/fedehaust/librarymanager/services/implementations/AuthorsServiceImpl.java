@@ -1,6 +1,5 @@
 package org.fedehaust.librarymanager.services.implementations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.fedehaust.librarymanager.dtos.AuthorRequest;
@@ -31,12 +30,6 @@ public class AuthorsServiceImpl implements AuthorsService {
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Override
-    public List<AuthorResponse> findAllAuthorsByIds(ArrayList<Long> authorIds) {
-        return AuthorsMapper.authorsToDtoList(authorsRepository.findAllById(authorIds));
-    }
-
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    @Override
     public AuthorResponse findAuthorById(Long id) {
         return AuthorsMapper.authorToDto(authorsRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(id)));
@@ -46,18 +39,5 @@ public class AuthorsServiceImpl implements AuthorsService {
     public AuthorResponse createAuthor(AuthorRequest authorRequest) {
         var author = AuthorsMapper.dtoToEntity(authorRequest);
         return AuthorsMapper.authorToDto(authorsRepository.save(author));
-    }
-
-    @Override
-    public void updateAuthor(AuthorRequest author) {
-        authorsRepository.save(AuthorsMapper.dtoToEntity(author));
-    }
-
-    @Override
-    public void deleteAuthor(Long id) {
-        var author = authorsRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException(id));
-
-        authorsRepository.deleteById(author.getId());
     }
 }

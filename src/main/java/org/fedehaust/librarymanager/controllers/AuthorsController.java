@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("authors")
@@ -31,8 +30,8 @@ public class AuthorsController {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping
-    public ResponseEntity<List<AuthorResponse>> getAllAuthors() {
-        return ResponseEntity.ok().body(authorsService.findAllAuthors());
+    public Iterable<AuthorResponse> getAllAuthors() {
+        return authorsService.findAllAuthors();
     }
 
     @Operation(summary = "Returns the author with the specified Id")

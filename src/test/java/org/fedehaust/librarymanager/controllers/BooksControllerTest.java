@@ -158,7 +158,7 @@ class BooksControllerTest {
                         .content(convertObjectToJsonBytes(bookBorrowedRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "/bookBorrows/1"))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/bookBorrowers/1"))
                 .andExpect(jsonPath("$", is(1)));
     }
 

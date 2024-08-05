@@ -15,9 +15,5 @@ public interface BooksService {
 
     BookResponse createBook(BookRequest bookRequest);
 
-    void updateBook(BookRequest bookRequest);
-
-    void deleteBook(Long id);
-
     Long borrowBook(Long bookId, BookBorrowedRequest bookBorrowedRequest) throws InvalidAttributeValueException;
 }

@@ -24,6 +24,6 @@ public class TestUtils {
         return mapper.writeValueAsBytes(object);
     }
 
-    public final static DateFormat df
+    public final static DateFormat DATE_TIME_FORMAT
             = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
 }

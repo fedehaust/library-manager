@@ -12,13 +12,7 @@ public interface BorrowersService {
 
     BorrowerResponse findBorrowerById(Long id, boolean loadBooks);
 
-    BorrowerResponse findBorrowerByEmail(String email, boolean loadBooks);
-
     BorrowerResponse createBorrower(BorrowerRequest borrowerRequest, boolean loadBooks);
-
-    void updateBorrower(BorrowerRequest borrowerRequest);
-
-    void deleteBorrower(Long id);
 
     List<BookBorrowedResponse> findBorrowedBooksByBorrower(Long id);
 }

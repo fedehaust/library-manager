@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
-import org.fedehaust.librarymanager.exceptions.BookNotFoundException;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("borrowers")
@@ -33,24 +31,20 @@ public class BorrowersController {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
     @GetMapping()
-    public ResponseEntity<List<BorrowerResponse>> getAllBorrowers(
+    public Iterable<BorrowerResponse> getAllBorrowers(
             @RequestParam(defaultValue = "false") Boolean loadBooks) {
-        return ResponseEntity.ok().body(borrowersService.findAllBorrowers(loadBooks));
+        return borrowersService.findAllBorrowers(loadBooks);
     }
 
     @Operation(summary = "Returns all the borrowed books by the specified borrower Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Borrower not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)})
-    @GetMapping("{id}/books")
-    public ResponseEntity<List<BookBorrowedResponse>> getAllBorrowedBooks(@PathVariable("id") Long id) {
-        try {
-            return ResponseEntity.ok().body(borrowersService.findBorrowedBooksByBorrower(id));
-        } catch (BorrowerNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower Not Found");
-        }
+    @GetMapping("{id}/bookBorrowers")
+    public Iterable<BookBorrowedResponse> getAllBorrowedBooks(@PathVariable("id") Long id) {
+        return borrowersService.findBorrowedBooksByBorrower(id);
     }
 
     @Operation(summary = "Returns the borrower with the specified Id filling the borrowed books optionally")

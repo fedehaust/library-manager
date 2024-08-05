@@ -17,12 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 import java.util.*;
 
 import static org.fedehaust.librarymanager.controllers.TestUtils.convertObjectToJsonBytes;
-import static org.fedehaust.librarymanager.controllers.TestUtils.df;
+import static org.fedehaust.librarymanager.controllers.TestUtils.DATE_TIME_FORMAT;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -69,7 +67,7 @@ class BorrowersControllerTest {
                 .andExpect(jsonPath("$[1].email", is("email2")))
                 .andExpect(jsonPath("$[1].bookBorrowedList[0].id", is(25)))
                 .andExpect(jsonPath("$[1].bookBorrowedList[0].title", is("book")))
-                .andExpect(jsonPath("$[1].bookBorrowedList[0].borrowDate", is(df.format(now))))
+                .andExpect(jsonPath("$[1].bookBorrowedList[0].borrowDate", is(DATE_TIME_FORMAT.format(now))))
                 .andExpect(jsonPath("$[1].bookBorrowedList[0].isReturned", is(false)));
     }
 
@@ -85,24 +83,26 @@ class BorrowersControllerTest {
         doReturn(mockBookBorrowedList).when(service).findBorrowedBooksByBorrower(1L);
 
         // Assert
-        mockMvc.perform(get("/borrowers/{id}/books", 1))
+        mockMvc.perform(get("/borrowers/{id}/bookBorrowers", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id", is(25)))
                 .andExpect(jsonPath("$[0].title", is("book")))
-                .andExpect(jsonPath("$[0].borrowDate", is(df.format(now))))
+                .andExpect(jsonPath("$[0].borrowDate", is(DATE_TIME_FORMAT.format(now))))
                 .andExpect(jsonPath("$[0].isReturned", is(false)));
     }
 
     @Test
-    @DisplayName("GET /borrowers/1/books - Not Found")
+    @DisplayName("GET /borrowers/2/bookBorrowers - Empty")
     void testGetAllBorrowedBooksNotFound() throws Exception {
         // Arrange
         doThrow(BorrowerNotFoundException.class).when(service).findBorrowedBooksByBorrower(1L);
 
         // Assert
-        mockMvc.perform(get("/borrowers/{id}/books", 1))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/borrowers/{id}/bookBorrowers", 2))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("[]"));
     }
 
     @Test

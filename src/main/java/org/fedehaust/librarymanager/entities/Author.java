@@ -16,7 +16,7 @@ public class Author extends EntityBase {
     private String description;
 
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             mappedBy = "authors")
     private final Set<Book> books = new HashSet<>();
