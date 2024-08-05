@@ -9,7 +9,7 @@ Windy soup is a project used to explore the functionalities of Spring Boot, Swag
     - Create a Book with the corresponding author
     - List all books
     - Get a book
-    - Borrow a book
+    - Borrow a book (Check that the book and borrower exist, and it is not already borrowed)
 - Authors
     - 
     - Create author (unique name)
@@ -21,6 +21,11 @@ Windy soup is a project used to explore the functionalities of Spring Boot, Swag
     - List all borrowers (boolean loadBooks optional parameter)
     - Get a borrower (boolean loadBooks optional parameter)
     - List all borrowed books
+- BookBorrowers
+    -
+    - Return a book
+    - Get a bookBorrower
+
 
 Unit testing (controller layer) and Integration testing (end-to-end) with Junit, Mockito and Hamcrest. (TODO: service layer)
 
