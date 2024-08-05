@@ -82,7 +82,7 @@ public class BorrowersControllerIntegrationTest {
         var borrowerRequest = new BorrowerRequest(
                 "First Name",
                 "Last Name",
-                "email",
+                "email@email.com",
                 Optional.of("notes"));
 
         // Act
@@ -105,6 +105,26 @@ public class BorrowersControllerIntegrationTest {
                 equalTo("%s %s".formatted(borrowerRequest.firstName(), borrowerRequest.lastName())));
         assertThat(insertedBorrower.email(), equalTo(borrowerRequest.email()));
         assertThat(insertedBorrower.bookBorrowedList(), equalTo(new ArrayList<>()));
+    }
+
+    @Test
+    @DisplayName("POST /borrowers - Bad Request")
+    public void testPostCreateBorrowerInvalidEmail() throws Exception {
+        // Arrange
+        var borrowerRequest = new BorrowerRequest(
+                "First Name",
+                "Last Name",
+                "invalidEmail",
+                null);
+
+        // Act
+        var response = this.restTemplate.postForEntity(
+                createRequestUrl(port, "/borrowers"),
+                borrowerRequest,
+                BorrowerResponse.class);
+
+        // Assert
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
     }
 
     @Test

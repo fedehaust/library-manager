@@ -3,6 +3,7 @@ package org.fedehaust.librarymanager.services.implementations;
 import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
+import org.fedehaust.librarymanager.exceptions.InvalidEmailException;
 import org.fedehaust.librarymanager.mappers.BookBorrowerMapper;
 import org.fedehaust.librarymanager.mappers.BorrowersMapper;
 import org.fedehaust.librarymanager.repositories.BookBorrowersRepository;
@@ -46,6 +47,10 @@ public class BorrowersServiceImpl implements BorrowersService {
 
     @Override
     public BorrowerResponse createBorrower(BorrowerRequest borrowerRequest, boolean loadBooks) {
+        String email = borrowerRequest.email();
+        if(EmailValidatorHelper.isInvalid(email))
+            throw new InvalidEmailException(email);
+
         var borrower = BorrowersMapper.dtoToEntity(borrowerRequest);
         return BorrowersMapper.borrowerToDto(borrowersRepository.save(borrower), loadBooks);
     }

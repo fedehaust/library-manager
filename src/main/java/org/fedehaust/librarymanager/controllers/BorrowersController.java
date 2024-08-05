@@ -9,6 +9,7 @@ import org.fedehaust.librarymanager.dtos.BookBorrowedResponse;
 import org.fedehaust.librarymanager.dtos.BorrowerRequest;
 import org.fedehaust.librarymanager.dtos.BorrowerResponse;
 import org.fedehaust.librarymanager.exceptions.BorrowerNotFoundException;
+import org.fedehaust.librarymanager.exceptions.InvalidEmailException;
 import org.fedehaust.librarymanager.services.interfaces.BorrowersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,8 @@ public class BorrowersController {
             return ResponseEntity
                     .created(new URI("/borrowers/%d".formatted(borrower.id())))
                     .body(borrower);
+        } catch (InvalidEmailException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email provided");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Borrower already exists");
         }
