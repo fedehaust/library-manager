@@ -39,9 +39,9 @@ The database has some dummy data that will be recreated for each time you run th
 > [!WARNING]
 > Don't use this database as final implementation, it's a database that runs in memory, you will lose your records!!!
 
-You can run this project with IntelliJ/Eclipse/etc or by the command line at the root
+You can run this project with IntelliJ/Eclipse/etc. or by the command line at the root
 
-First (celan and create the jar files at the target folder)
+First (clean and create the jar files at the target folder)
 
 ```bash
   mvn clean verify
